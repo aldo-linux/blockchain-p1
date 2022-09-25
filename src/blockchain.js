@@ -122,7 +122,13 @@ class Blockchain {
             if((currentTime-messageTime) < (5*60)) {
                 let isVerified = bitcoinMessage.verify(message, address, signature);
                 if(verified) {
-                    let block = self._addBlock(new Block(star));
+                    let block = self._addBlock(new Block({
+                            owner: address,
+                            message,
+                            signature,
+                            star
+                        }));
+                    console.log(`Block added to Blockchain: ${block}`);
                     resolve(block);
                 } else {
                     reject(new Error("invalid signature"));

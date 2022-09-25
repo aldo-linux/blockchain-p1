@@ -40,20 +40,16 @@ class Block {
         return new Promise((resolve, reject) => {
             // Save in auxiliary variable the current block hash
             let currentHash = self.hash;
-            console.log("Block.validate() - Current hash = {}", currentHash);                                
+            console.log("Block.validate() - Current hash = {}", currentHash);    
+            self.hash = null;                            
             // Recalculate the hash of the Block
             let hash2Compare = SHA256(JSON.stringify(self));
+            self.hash = currentHash; //restore the hash after re-calculating it 
             console.log("Block.validate() - Hash to compare = {}", hash2Compare);   
             // Comparing if the hashes changed
-            if( currentHash == hash2Compare){ 
-                // Returning the Block is not valid
-                console.log("Block.validate() - currentHash == hash2Compare is TRUE");
-                resolve(true);
-            } else {
-                // Returning the Block is valid
-                console.log("Block.validate() - currentHash == hash2Compare is TRUE");
-                resolve(false);
-            }
+            let areHashesEqual = (currentHash === hash2Compare);
+            console.log(`Block.validate() - currentHash == hash2Compare is ${areHashesEqual}`);
+            resolve(areHashesEqual);
         });
     }
 
@@ -72,7 +68,7 @@ class Block {
         let self = this;   
         const theEncodedData = self.body;
         // Decoding the data to retrieve the JSON representation of the object
-        const theDataInAscii = hex2ascii(theEncodedData);
+        const theDataInAscii = hex2ascii(theEncodedData.toString('ascii'));
         // Parse the data to an object to be retrieve.
         const theData = JSON.parse(theDataInAscii);
 
