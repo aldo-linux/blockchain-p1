@@ -11,6 +11,7 @@
 const SHA256 = require('crypto-js/sha256');
 const BlockClass = require('./block.js');
 const bitcoinMessage = require('bitcoinjs-message');
+const Block = require('bitcoinjs-lib/src/block.js');
 
 class Blockchain {
 
@@ -64,7 +65,20 @@ class Blockchain {
     _addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-           
+            // block height
+            block.height = this.chain.length;
+            // UTC timestamp
+            block.timeStamp = new Date().getTime().toString().slice(0,-3);
+            if (this.chain.length>0) { // If it is NOT the Genesis Blok
+                // previous block hash
+                block.previousHash = this.getLatestBlock().hash;
+            }
+            // SHA256 requires a string of data
+            block.hash = SHA256(JSON.stringify(block)).toString();
+            console.log(JSON.stringify(block));
+            // add block to chain
+            this.chain.push(block);
+            resolve(block);
         });
     }
 
@@ -78,7 +92,8 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
-            
+            const message = `${address}:${new Date().getTime().toString().slice(0,-3)}:starRegistry`;
+            resolve (message);
         });
     }
 
@@ -102,7 +117,19 @@ class Blockchain {
     submitStar(address, message, signature, star) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-            
+            const messageTime = parseInt(message.split(':')[1]);
+            let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
+            if((currentTime-messageTime) < (5*60)) {
+                let isVerified = bitcoinMessage.verify(message, address, signature);
+                if(verified) {
+                    let block = self._addBlock(new Block(star));
+                    resolve(block);
+                } else {
+                    reject(new Error("invalid signature"));
+                } 
+            } else {
+                reject(new Error("5 minutes validation time limit exceeded"));
+            }
         });
     }
 
@@ -115,7 +142,8 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-           
+            const [block] = self.chain.filter(block => block.hash === hash);
+            resolve(block);
         });
     }
 
