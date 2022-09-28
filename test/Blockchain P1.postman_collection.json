@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "dfe5a0ca-7062-4d62-9fd6-d5cd94a3b57f",
+		"name": "Blockchain P1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get block",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/block/height/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"block",
+						"height",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve Stars by hash",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/blocks/daskjdlkasjd9ewdeiwjdkldjlkas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"blocks",
+						"daskjdlkasjd9ewdeiwjdkldjlkas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Validation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"bc1q6tj2jv3pe6gc8utzjmv0qhprwpaju5k3acpa2z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/requestValidation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"requestValidation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Star",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"address\": \"1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN\",\n    \"signature\": \"GyBPZO6OQ+tPGoMWWJFfIPcXlezJ4TZrW1fB/PaXGSe4PMZ83uj8RQnoqad1OXIwjbbKv5EYfLRlPGj8Zk9C2RE=\",\n    \"message\": \"1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN:1664242037:starRegistry\",\n    \"star\" : {\n        \"dec\": \"69\",\n        \"ra\": \"16h\",\n        \"story\": \"Testing 1\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/submitstar",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"submitstar"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

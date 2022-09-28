@@ -66,18 +66,18 @@ class Blockchain {
         let self = this;
         return new Promise(async (resolve, reject) => {
             // block height
-            block.height = this.chain.length;
+            block.height = self.chain.length;
             // UTC timestamp
             block.timeStamp = new Date().getTime().toString().slice(0,-3);
-            if (this.chain.length>0) { // If it is NOT the Genesis Blok
+            if (self.chain.length>0) { // If it is NOT the Genesis Blok
                 // previous block hash
-                block.previousHash = this.getLatestBlock().hash;
+                block.previousHash = self.chain[block.height-1].hash;
             }
             // SHA256 requires a string of data
             block.hash = SHA256(JSON.stringify(block)).toString();
             console.log(JSON.stringify(block));
             // add block to chain
-            this.chain.push(block);
+            self.chain.push(block);
             resolve(block);
         });
     }
@@ -120,14 +120,19 @@ class Blockchain {
             const messageTime = parseInt(message.split(':')[1]);
             let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
             if((currentTime-messageTime) < (5*60)) {
-                let isVerified = bitcoinMessage.verify(message, address, signature);
-                if(verified) {
-                    let block = self._addBlock(new Block({
+                let isVerified = false;
+                try {
+                    isVerified = bitcoinMessage.verify(message, address, signature);
+                } catch (error) {
+                    //reject (error);
+                }          
+                if(isVerified) {
+                    let block = self._addBlock({
                             owner: address,
                             message,
                             signature,
                             star
-                        }));
+                        }).then((b) => b);
                     console.log(`Block added to Blockchain: ${block}`);
                     resolve(block);
                 } else {
@@ -180,7 +185,15 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            
+            Promise.all(self.chain.map(block => block.getBData()))
+            .then((decodedBlocks) => {
+                stars = decodedBlocks
+                    .filter(block => block && block.owner === address)
+                    .map(block => block.star);
+
+                resolve(stars);
+            })
+            .catch(error => reject(error));      
         });
     }
 
@@ -193,9 +206,37 @@ class Blockchain {
     validateChain() {
         let self = this;
         let errorLog = [];
-        return new Promise(async (resolve, reject) => {
-            
-        });
+        return new Promise((resolve) => {
+            // Go through each block and make sure stored hash of
+            // previous block matches actual hash of previous block
+            let validatePromises = [];
+            self.chain.forEach((block, index) => {
+                if (block.height > 0) {
+                    const previousBlock = self.chain[index - 1];
+                    if (block.previousBlockHash !== previousBlock.hash) {
+                        const errorMessage = `Block ${index} previousBlockHash set to ${block.previousBlockHash}, but actual previous block hash was ${previousBlock.hash}`;
+                        errorLog.push(errorMessage);
+                    }
+                }
+
+                // Store promise to validate each block
+                validatePromises.push(block.validate());
+            });
+
+            // Collect results of each block's validate call
+            Promise.all(validatePromises)
+                .then(validatedBlocks => {
+                    validatedBlocks.forEach((valid, index) => {
+                        if (!valid) {
+                            const invalidBlock = self.chain[index];
+                            const errorMessage = `Block ${index} hash (${invalidBlock.hash}) is invalid`;
+                            errorLog.push(errorMessage);
+                        }
+                    });
+
+                    resolve(errorLog);
+                });
+        });                                                                                           
     }
 
 }
