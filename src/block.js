@@ -76,7 +76,7 @@ class Block {
         if (self.height > 0) {
             resolve(theData);
         } else {
-            reject();
+            resolve();
         }
     }
 }

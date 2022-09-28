@@ -127,12 +127,12 @@ class Blockchain {
                     //reject (error);
                 }          
                 if(isVerified) {
-                    let block = self._addBlock({
+                    let block = self._addBlock(new BlockClass.Block({
                             owner: address,
                             message,
                             signature,
                             star
-                        }).then((b) => b);
+                        })).then((b) => b);
                     console.log(`Block added to Blockchain: ${block}`);
                     resolve(block);
                 } else {
