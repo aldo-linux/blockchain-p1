@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "25cf49b7-dcbb-45d5-ac5d-00252b2f6472",
+		"_postman_id": "47ba4b35-39eb-4034-88d4-2ec0a01db37d",
 		"name": "Blockchain P1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/block/height/1",
+					"raw": "http://localhost:8000/block/height/0",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -20,7 +20,7 @@
 					"path": [
 						"block",
 						"height",
-						"1"
+						"0"
 					]
 				}
 			},
@@ -102,7 +102,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"address\": \"1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN\",\n    \"signature\": \"GzzlDIl/gmlh2rBzJVtln+vhwEAFz2pW/rL2+XLRP/traZ2vzMH1zwFkILP05tEnvskISWGGW8/y2pHWNpAvfm8=\",\n    \"message\": \"1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN:1664673756:starRegistry\",\n    \"star\" : {\n        \"dec\": \"69\",\n        \"ra\": \"16h\",\n        \"story\": \"Testing 1\"\n    }\n}",
+					"raw": "{\n    \"address\": \"1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN\",\n    \"signature\": \"HCrpzDaQoBV9mndAREN6DTxoJ8X6qfFfFEfwoIDqA2ORDywcZHXNaO6qFoNUoO++vsc+Q5gSxbRZSOnp4VRhoQE=\",\n    \"message\": \"1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN:1664714282:starRegistry\",\n    \"star\" : {\n        \"dec\": \"69\",\n        \"ra\": \"16h\",\n        \"story\": \"Testing 1\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"

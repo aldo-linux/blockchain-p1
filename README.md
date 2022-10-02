@@ -1,3 +1,16 @@
+# Rubric Items and Test Screenshots
+
+1. Must use a GET call to request the Genesis block
+[](test/test1.png)
+2. Must use a POST call to requestValidation
+[](test/test2.png)
+3. Must sign message with your wallet
+[](test/test3.png)
+4. Must submit your Star
+[](test/test4.png)
+5. Must use GET call to retrieve starts owned by a particular address
+[](test/test5.png)
+
 # Private Blockchain Application
 
 You are starting your journey as a Blockchain Developer, this project allows you to demonstrate
