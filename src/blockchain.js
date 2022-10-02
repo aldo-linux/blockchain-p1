@@ -71,13 +71,21 @@ class Blockchain {
             block.timeStamp = new Date().getTime().toString().slice(0,-3);
             if (self.chain.length>0) { // If it is NOT the Genesis Blok
                 // previous block hash
-                block.previousHash = self.chain[block.height-1].hash;
+                block.previousBlockHash = self.chain[block.height-1].hash;
             }
             // SHA256 requires a string of data
             block.hash = SHA256(JSON.stringify(block)).toString();
             console.log(JSON.stringify(block));
             // add block to chain
             self.chain.push(block);
+
+            // Validate Chain
+            
+            self.validateChain().then(errorLog => {
+                if(errorLog.length>0)
+                    reject(errorLog);
+            });
+
             resolve(block);
         });
     }
@@ -185,6 +193,17 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
+            self.chain.forEach((encodedBlock, idx)=>{
+                if( idx>0) { // Ignore the genesis block
+                    let block = encodedBlock.getBData();
+                    if( block.owner === address) {
+                        stars.push(block.star);
+                    }
+                }
+                
+            });
+            resolve(stars);
+            /* TODO: this is probably a better way to do it. but much more difficult to debug
             Promise.all(self.chain.map(block => block.getBData()))
             .then((decodedBlocks) => {
                 stars = decodedBlocks
@@ -193,7 +212,7 @@ class Blockchain {
 
                 resolve(stars);
             })
-            .catch(error => reject(error));      
+            .catch(error => reject(error));   */   
         });
     }
 
@@ -207,38 +226,22 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise((resolve) => {
-            // Go through each block and make sure stored hash of
-            // previous block matches actual hash of previous block
-            let validatePromises = [];
-            self.chain.forEach((block, index) => {
-                if (block.height > 0) {
-                    const previousBlock = self.chain[index - 1];
-                    if (block.previousBlockHash !== previousBlock.hash) {
-                        const errorMessage = `Block ${index} previousBlockHash set to ${block.previousBlockHash}, but actual previous block hash was ${previousBlock.hash}`;
-                        errorLog.push(errorMessage);
+            self.chain.forEach((block, idx)=>{
+                block.validate().then(result =>{
+                    if(!result) {
+                        errorLog.push(`Invalid block ${block.hash}`);
                     }
-                }
-
-                // Store promise to validate each block
-                validatePromises.push(block.validate());
-            });
-
-            // Collect results of each block's validate call
-            Promise.all(validatePromises)
-                .then(validatedBlocks => {
-                    validatedBlocks.forEach((valid, index) => {
-                        if (!valid) {
-                            const invalidBlock = self.chain[index];
-                            const errorMessage = `Block ${index} hash (${invalidBlock.hash}) is invalid`;
-                            errorLog.push(errorMessage);
+                    //Validate previous hash
+                    if(block.height>0) {
+                        if(!(block.previousBlockHash === self.chain[idx-1].hash)) {
+                            errorLog.push(`Block previousBlockHash (${block.previousBlockHash}) is wrong`);
                         }
-                    });
-
-                    resolve(errorLog);
+                    }
                 });
+            });
+            resolve(errorLog); 
         });                                                                                           
     }
-
 }
 
 module.exports.Blockchain = Blockchain;   

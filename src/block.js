@@ -64,7 +64,6 @@ class Block {
      */
     getBData() {
         // Getting the encoded data saved in the Block
-        //this.body = Buffer.from(JSON.stringify(data)).toString('hex');
         let self = this;   
         const theEncodedData = self.body;
         // Decoding the data to retrieve the JSON representation of the object
@@ -73,11 +72,7 @@ class Block {
         const theData = JSON.parse(theDataInAscii);
 
         // Resolve with the data if the object isn't the Genesis block
-        if (self.height > 0) {
-            resolve(theData);
-        } else {
-            resolve();
-        }
+        return theData;
     }
 }
 
