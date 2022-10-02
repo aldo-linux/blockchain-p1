@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "47ba4b35-39eb-4034-88d4-2ec0a01db37d",
+		"_postman_id": "c2a13146-dcad-4005-b356-16eae80af201",
 		"name": "Blockchain P1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -21,6 +21,25 @@
 						"block",
 						"height",
 						"0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate Blockchain",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/validateBlockchain",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"validateBlockchain"
 					]
 				}
 			},

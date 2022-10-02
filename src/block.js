@@ -47,7 +47,12 @@ class Block {
             self.hash = currentHash; //restore the hash after re-calculating it 
             console.log("Block.validate() - Hash to compare = {}", hash2Compare);   
             // Comparing if the hashes changed
-            let areHashesEqual = (currentHash === hash2Compare);
+            let areHashesEqual = false
+            if(self.height>0) {
+                areHashesEqual = (currentHash === hash2Compare);
+            } else {
+                areHashesEqual = true;
+            }
             console.log(`Block.validate() - currentHash == hash2Compare is ${areHashesEqual}`);
             resolve(areHashesEqual);
         });
